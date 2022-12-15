@@ -20,15 +20,13 @@ const FileUploadBox = ({ isLoading, setIsFileLoaded }: FileUploadBoxProps) => {
 
   const handleClick = () => fileInputRef.current?.click()
 
-  const { register, formState: { isSubmitSuccessful, errors }, resetField } = useFormContext();
+  const { register, formState: { errors, submitCount }, resetField } = useFormContext();
 
   useEffect(() => {
-    if (isSubmitSuccessful) {
-      setPreviewFile(null)
-      setIsFileLoaded(false)
-      resetField('file')
-    }
-  }, [isSubmitSuccessful])
+    setPreviewFile(null)
+    setIsFileLoaded(false)
+    resetField('file')
+  }, [submitCount])
 
   useEffect(() => {
     if (errors.file) {

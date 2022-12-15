@@ -8,7 +8,7 @@ import userService from '../../src/services/user.service'
 export default function AvatarPage() {
 
   const { user, refresh } = useUser()
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, resetField } = useForm()
 
   const [preview, setPreview] = useState<string | undefined>(user?.avatar?.url)
   const [isLoading, setIsLoading] = useState<Boolean>(false)
@@ -42,10 +42,12 @@ export default function AvatarPage() {
       formData.append("file", data.avatar[0], data.avatar[0].name)
       await userService.updateAvatar(formData)
       await refresh()
-      setIsLoading(false)
     } catch (error: any) {
       setError(error.message)
+    } finally {
+      setIsFilePicked(false)  
       setIsLoading(false)
+      resetField('avatar')
     }
   })
 
@@ -64,7 +66,7 @@ export default function AvatarPage() {
               Change Avatar
             </Heading>
             <Heading size='sm' color={'gray.500'}>
-                For demo purposes, files will be deleted with frequency.
+              For demo purposes, files will be deleted with frequency.
             </Heading>
             <Divider />
             <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'} h='full' flex={1} >

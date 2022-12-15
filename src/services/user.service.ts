@@ -52,5 +52,6 @@ export const deletePublicFile = async (fileId: string) => {
 export default {
   updateAvatar,
   uploadPublicFile,
-  getAllPublicFiles
+  getAllPublicFiles,
+  deletePublicFile
 }

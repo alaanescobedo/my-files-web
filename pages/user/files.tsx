@@ -26,6 +26,7 @@ export default function MyFilesPage() {
 
   const [isFileLoaded, setIsFileLoaded] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [deletingFileId, setDeletingFileId] = useState<string | null>(null)
   const [myFiles, setMyFiles] = useState<FilePublic[]>([])
   const methods = useForm();
 
@@ -43,13 +44,27 @@ export default function MyFilesPage() {
       const formData = new FormData()
       formData.append('file', file, file.name)
       const filePublic = await userService.uploadPublicFile(formData)
-      setIsLoading(false)
       setMyFiles(prev => [...prev, filePublic])
+      setIsFileLoaded(false)
+      setIsLoading(false)
     } catch (error: any) {
+      console.log(error)
     } finally {
       setIsLoading(false)
     }
   })
+
+  const handleDeleteFile = async (fileId: string) => {
+    try {
+      setDeletingFileId(fileId)
+      await userService.deletePublicFile(fileId)
+      setMyFiles(prev => prev.filter(file => file.id !== fileId))
+    } catch (error: any) {
+      console.log(error);
+    } finally {
+      setDeletingFileId(null)
+    }
+  }
 
 
   return (
@@ -79,7 +94,7 @@ export default function MyFilesPage() {
 
                     {myFiles.map((file) => (
                       <GridItem h='100%' display={'flex'} justifyContent='center' key={file.id}>
-                        <FileBox file={file} />
+                        <FileBox file={file} onDeleteFile={handleDeleteFile} isDeleting={deletingFileId === file.id} />
                       </GridItem>
                     ))}
                     <GridItem h='100%' display={'flex'} justifyContent='center' >
@@ -91,8 +106,10 @@ export default function MyFilesPage() {
                   <Divider my={4} />
                   <Flex justifyContent={'end'} >
 
-                    <Button w={['full', 'md', 'sm']} leftIcon={<HiUpload />} type='submit' form='form-attachment' disabled={isFileLoaded ? false : true} >
-                      {isFileLoaded ? 'Upload' : 'No file selected'}
+                    <Button w={['full', 'md', 'sm']} leftIcon={<HiUpload />} type='submit' form='form-attachment' disabled={!isFileLoaded || isLoading ? true : false} >
+                      {isFileLoaded && !isLoading && 'Upload'}
+                      {!isFileLoaded && !isLoading && 'No file selected'}
+                      {isFileLoaded && isLoading && 'Uploading...'}
                     </Button>
 
                   </Flex>
