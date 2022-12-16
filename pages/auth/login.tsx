@@ -18,6 +18,7 @@ import {
 import NextLink from 'next/link';
 import { useForm } from "react-hook-form";
 import { PasswordInput } from '../../src/components/password.input';
+import { RenderIf } from '../../src/components/render-if';
 import { useAuth } from '../../src/store';
 
 export default function Login() {
@@ -64,17 +65,19 @@ export default function Login() {
           onSubmit={onSubmit}
         >
           <Stack spacing={4}>
-            {errorAuth && (
+            <RenderIf condition={errorAuth !== null}>
               <Alert status='error' wordBreak={"break-word"}>
                 <AlertIcon />
                 <AlertDescription>{errorAuth}</AlertDescription>
               </Alert>
-            )}
-            {!errorAuth && loading && (
+            </RenderIf>
+
+            <RenderIf condition={!errorAuth && loading}>
               <Alert status='loading' justifyContent={'center'}>
                 <Spinner />
               </Alert>
-            )}
+            </RenderIf>
+
             <Button onClick={handleFillWithDemoData}>
               Fill with demo data
             </Button>

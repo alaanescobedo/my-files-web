@@ -2,6 +2,7 @@ import { AttachmentIcon } from '@chakra-ui/icons'
 import { Box, Button, HStack, Icon, Text, VisuallyHiddenInput, VStack } from '@chakra-ui/react'
 import React, { useRef, useState, useEffect } from 'react'
 import { useForm, useFormContext } from 'react-hook-form'
+import { RenderIf } from './render-if'
 
 const PDF_THUMBNAIL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/833px-PDF_file_icon.svg.png'
 
@@ -76,23 +77,25 @@ const FileUploadBox = ({ isLoading, setIsFileLoaded }: FileUploadBoxProps) => {
 
         <VStack spacing={1}>
 
-
-          {previewFile?.name && (
+          <RenderIf condition={previewFile ? true : false}>
             <Text fontSize={'sm'} fontWeight={'bold'} textTransform={'uppercase'} letterSpacing={'wide'} bg={'gray.700'} p={1} borderRadius={'md'} opacity={1}  >
-              {previewFile.ext}
+              {previewFile?.ext}
             </Text>
-          )}
-          {!previewFile?.name && (
+          </RenderIf>
+
+          <RenderIf condition={previewFile ? false : true}>
             <HStack spacing={1}>
               <Icon as={AttachmentIcon} />
               <Text>Attachment</Text>
             </HStack>
-          )}
-          {isLoading && (
+          </RenderIf>
+
+          <RenderIf condition={isLoading}>
             <Text fontSize={'sm'} fontWeight={'bold'} textTransform={'uppercase'} letterSpacing={'wide'} bg={'gray.700'} p={1} borderRadius={'md'} opacity={1} color={'blue.500'} >s
               Loading
             </Text>
-          )}
+          </RenderIf>
+          
         </VStack>
         <VisuallyHiddenInput
           type='file'

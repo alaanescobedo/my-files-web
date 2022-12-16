@@ -3,6 +3,9 @@ import Head from 'next/head'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import UserCard from '../src/components/user-card'
 import usersService from '../src/services/users.service'
+import { RenderIf } from '../src/components/render-if'
+import { User } from '../src/store'
+import { useState, useEffect } from 'react'
 
 export default function Home() {
 
@@ -12,6 +15,13 @@ export default function Home() {
     },
     refetchOnWindowFocus: false,
   })
+
+  const [usersData, setUsersData] = useState<User[]>(query.data || [])
+
+  useEffect(() => {
+    if (query.isSuccess) setUsersData(query.data)
+  }, [query.isFetched])
+
 
   return (
     <>
@@ -24,20 +34,29 @@ export default function Home() {
       <Container maxW={'container.lg'}>
         <Box as='main' flex='1' >
 
-          {query.isError && <p>Error</p>}
+          <RenderIf condition={query.isError}>
+            <p>Error</p>
+          </RenderIf>
+
           <Grid templateColumns='repeat(auto-fill, minmax(300px, 1fr))' gap={4} textAlign="center">
-            {query.isLoading && (
-              Array.from({ length: 9 }).map((_, index) => (
+            <RenderIf condition={query.isError}>
+              <p>Error</p>
+            </RenderIf>
+            <RenderIf condition={query.isLoading}>
+              {Array.from({ length: 9 }).map((_, index) => (
                 <GridItem key={index} py={'28'}>
                   < Spinner />
                 </GridItem>
-              ))
-            )}
-            {query.isSuccess && query.data.map((user) => (
-              <GridItem key={user.id}>
-                <UserCard user={user} />
-              </GridItem>
-            ))}
+              ))}
+            </RenderIf>
+
+            <RenderIf condition={query.isSuccess && usersData.length > 0}>
+              {usersData.map((user) => (
+                <GridItem key={user.id}>
+                  <UserCard user={user} />
+                </GridItem>
+              ))}
+            </RenderIf>
           </Grid>
         </Box>
       </Container>

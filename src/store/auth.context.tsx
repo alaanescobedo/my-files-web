@@ -87,6 +87,7 @@ function useProvideAuth() {
     try {
       handleStart()
       await authService.logout()
+      await authenticate()
       handleUser(null)
     } catch (error: any) {
       handleError(error)
@@ -178,7 +179,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 // ============== Utils ==============
 function formatUser(user: User) {
-  console.log('formating...', { user })
   return {
     id: user.id,
     username: user.username,
