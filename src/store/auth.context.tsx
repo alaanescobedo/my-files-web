@@ -40,7 +40,7 @@ type AuthContextProps = {
   logout: () => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
   authenticate: () => Promise<void>;
-  onSuccess: ({ redirectTo }: { redirectTo: string }) => void;
+  success: boolean;
 }
 
 // ============== Context ==============
@@ -64,14 +64,20 @@ export const useAuth = ({ redirectOnAuth }: { redirectOnAuth?: string } = {}) =>
   return authMethods
 }
 
-export const useUser = () => {
+export const useUser = ({ redirectTo }: { redirectTo?: string } = {}) => {
   const auth = useContext(AuthContext);
   if (!auth) throw new Error('useUser must be used within an AuthProvider')
-  const { user, authenticate } = auth
+  const { user, loading, authenticate } = auth
 
-  const refresh = async () => {
-    await authenticate()
-  }
+  const router = useRouter()
+
+  const refresh = async () => await authenticate()
+
+  useEffect(() => {
+    if (!user && !loading && redirectTo) {
+      router.push(redirectTo)
+    }
+  }, [user])
 
   return { user, refresh }
 }
@@ -81,7 +87,7 @@ function useProvideAuth() {
 
   const userQuery = useQuery({
     queryKey: ['user_auth'], queryFn: async () => {
-      if(router.pathname.includes('auth')) return null
+      if (router.pathname.includes('auth')) return null
       await authenticate()
       return null // useQuery requires a return value
     },
@@ -92,7 +98,7 @@ function useProvideAuth() {
   const [user, setUser] = useState<User | null>(userQuery.data || null);// Data can be undefined
   const [loading, setLoading] = useState(router.pathname.includes('auth') ? false : true);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<Boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
 
 
   // Public
@@ -108,7 +114,6 @@ function useProvideAuth() {
     try {
       handleStart()
       await authService.logout()
-      await authenticate()
       handleUser(null)
     } catch (error: any) {
       handleError(error)
@@ -132,15 +137,6 @@ function useProvideAuth() {
       handleError(error)
     }
   }
-
-  // Events Public
-  const onSuccess = ({ redirectTo }: { redirectTo: string }) => useEffect(() => {
-    if (success) {
-      setSuccess(false)
-      router.push(redirectTo)
-    }
-    return () => setSuccess(false)
-  }, [success])
 
   // Private
   const handleUser = async (rawUser: User | null) => {
@@ -181,7 +177,7 @@ function useProvideAuth() {
     login,
     logout,
     register,
-    onSuccess,
+    success,
     authenticate,
     error
   }
@@ -205,6 +201,8 @@ function formatUser(user: User) {
     username: user.username,
     email: user.email,
     avatar: user.avatar || null,
-    address: user.address || null
+    address: user.address || null,
+    // @ts-ignore -- backend will fix typo
+    subscription: user.suscription || null,
   } as User
 }
