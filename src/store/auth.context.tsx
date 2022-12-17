@@ -5,9 +5,19 @@ import { useQuery } from "@tanstack/react-query";
 
 // ============== Interfaces ==============
 export interface FilePublic {
-  id: string;
+  id: number;
   publicName: string
   url: string;
+}
+interface Plan {
+  id: number;
+  limitCloudMonthlyUploads: number;
+  limitCloudStorage: number;
+  planName: string;
+}
+interface Subscription {
+  id: number;
+  plan: Plan
 }
 interface Address {
   street: string;
@@ -15,11 +25,12 @@ interface Address {
   state: string;
 }
 export interface User {
-  id: string;
+  id: number;
   username: string;
   email: string;
   avatar: FilePublic | null;
   address: Address | null;
+  subscription: Subscription | null;
 }
 type AuthContextProps = {
   user: User | null;
