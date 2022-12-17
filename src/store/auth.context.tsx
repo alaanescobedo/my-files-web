@@ -36,10 +36,20 @@ type AuthContextProps = {
 const AuthContext = createContext<AuthContextProps | null>(null);
 
 // ============== Hooks ==============
-export const useAuth = () => {
+export const useAuth = ({ redirectOnAuth }: { redirectOnAuth?: string } = {}) => {
   const auth = useContext(AuthContext);
   if (!auth) throw new Error('useAuth must be used within an AuthProvider')
-  const { user, ...authMethods } = auth
+
+  const router = useRouter()
+
+  const { user, success, ...authMethods } = auth
+
+  useEffect(() => {
+    if (success && redirectOnAuth) {
+      router.push(redirectOnAuth)
+    }
+  }, [success])
+
   return authMethods
 }
 

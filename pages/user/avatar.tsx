@@ -7,7 +7,9 @@ import userService from '../../src/services/user.service'
 
 export default function AvatarPage() {
 
-  const { user, refresh } = useUser()
+  const { user, refresh } = useUser({
+    redirectTo: '/auth/login',
+  })
   const { register, handleSubmit, resetField } = useForm()
 
   const [preview, setPreview] = useState<string | undefined>(user?.avatar?.url)

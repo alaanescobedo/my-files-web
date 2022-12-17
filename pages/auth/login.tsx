@@ -29,7 +29,9 @@ export default function Login() {
       password: ''
     }
   });
-  const { loading, login, error: errorAuth, onSuccess } = useAuth()
+  const { loading, login, error: errorAuth } = useAuth({
+    redirectOnAuth: '/'
+  })
 
   const onSubmit = handleSubmit(async data => {
     if (!data.username || !data.password) return

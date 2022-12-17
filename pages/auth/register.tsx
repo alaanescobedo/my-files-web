@@ -31,7 +31,9 @@ export default function Register() {
       password: ''
     }
   });
-  const { loading, register: registerAuth, error: errorAuth, onSuccess } = useAuth()
+  const { loading, register: registerAuth, error: errorAuth } = useAuth({
+    redirectOnAuth: '/'
+  })
 
   const onSubmit = handleSubmit(async data => {
     await registerAuth(data.username, data.email, data.password)
