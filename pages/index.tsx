@@ -51,7 +51,7 @@ export default function Home() {
             </RenderIf>
 
             <RenderIf condition={query.isSuccess && usersData.length > 0}>
-              {usersData.map((user) => (
+              {usersData.slice(0).reverse().map((user) => (
                 <GridItem key={user.id}>
                   <UserCard user={user} />
                 </GridItem>
