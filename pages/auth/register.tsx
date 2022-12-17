@@ -22,6 +22,7 @@ import NextLink from 'next/link';
 import { useForm } from 'react-hook-form';
 import { useAuth, useUser } from '../../src/store';
 import { PasswordInput } from '../../src/components/password.input';
+import { faker } from '@faker-js/faker';
 
 export default function Register() {
   const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
@@ -41,12 +42,10 @@ export default function Register() {
   })
 
   const handleFillWithDemoData = () => {
-    setValue('username', 'demo_user')
-    setValue('email', 'demo@user.com')
-    setValue('password', 'demo_password')
+    setValue('username', faker.internet.userName())
+    setValue('email', faker.internet.email())
+    setValue('password', faker.internet.password())
   }
-
-  onSuccess({ redirectTo: '/' })
 
   return (
     <Flex
