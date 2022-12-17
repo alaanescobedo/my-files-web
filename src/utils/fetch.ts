@@ -52,9 +52,7 @@ export const remove = async <T>(url: string, config?: Omit<RequestInit, 'body' |
 const handleResponse = (response: Response) => {
   return response.text().then((text: any) => {
     const data = text && JSON.parse(text)
-    console.log('data', data)
     if (!response.ok) {
-      console.log('error>>', data)
       const error = (data && data.message) || response.statusText
       throw new Error(error)
     }

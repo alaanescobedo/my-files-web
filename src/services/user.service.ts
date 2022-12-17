@@ -32,18 +32,16 @@ export const getAllPublicFiles = async (username: string) => {
     const res = await fetch.get<FilePublic[]>(`${API_URL.BASE_USER_FILES}/${username}/public-files`)
     return res
   } catch (error) {
-    console.log({ error })
     throw error
   }
 }
 
-export const deletePublicFile = async (fileId: string) => {
+export const deletePublicFile = async (fileId: number) => {
   try {
     const res = await fetch.remove(`${API_URL.USERS_FILES_PUBLIC_FILE}/${fileId}`,{
     })
     return res
   } catch (error) {
-    console.log({ error })
     throw error
   }
 }

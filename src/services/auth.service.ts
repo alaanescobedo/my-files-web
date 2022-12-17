@@ -40,7 +40,6 @@ export const logout = async () => {
 
 export const authenticate = async (cookie?: any) => {
   try {
-    console.log('authenticating...');
     const data = await fetch.get<User>(API_URL.AUTHENTICATE, {
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +48,6 @@ export const authenticate = async (cookie?: any) => {
     })
     return data
   } catch (error: any) {
-    console.log({ error });
     throw error
   }
 }
