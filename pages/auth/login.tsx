@@ -36,13 +36,6 @@ export default function Login() {
     await login(data.username, data.password)
   })
 
-  const handleFillWithDemoData = () => {
-    setValue('username', 'demo_user')
-    setValue('password', 'demo_password')
-  }
-
-  onSuccess({ redirectTo: '/' })
-
   return (
     <Flex
       align={'center'}
@@ -78,9 +71,6 @@ export default function Login() {
               </Alert>
             </RenderIf>
 
-            <Button onClick={handleFillWithDemoData}>
-              Fill with demo data
-            </Button>
             <FormControl id="username">
               <FormLabel>Username</FormLabel>
               <Input type="username" {...register("username")} />
