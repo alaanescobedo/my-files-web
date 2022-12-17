@@ -3,12 +3,9 @@ import {
   Avatar,
   Box,
   Center,
-  Image,
-  Flex,
   Text,
   Stack,
   Button,
-  useColorModeValue,
   Badge,
   HStack,
 } from '@chakra-ui/react';
@@ -22,27 +19,18 @@ export default function UserCard({ user }: { user: User }) {
       <Box
         maxW={'270px'}
         w={'full'}
-        bg={useColorModeValue('white', 'gray.800')}
+        bg={'gray.800'}
         boxShadow={'2xl'}
         rounded={'md'}
         overflow={'hidden'}>
-        <Image
-          h={'120px'}
-          w={'full'}
-          src={
-            'https://images.unsplash.com/photo-1612865547334-09cb8cb455da?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
-          }
-          objectFit={'cover'}
-        />
-        <Flex justify={'center'} mt={-12}>
+
+        <Box p={4} bg={'blue.900'}>
           <Avatar
             size="xl"
-            src={user.avatar?.url}
-            css={{
-              border: '2px solid white',
-            }}
+            src={userAuth?.id === user.id ? userAuth?.avatar?.url : user.avatar?.url}
+            border={'2px solid white'}
           />
-        </Flex>
+        </Box>
 
         <Box p={6}>
           <Stack spacing={0} align={'center'} mb={5}>
@@ -60,15 +48,16 @@ export default function UserCard({ user }: { user: User }) {
           </Stack>
           <Button
             as={NextLink}
-            href={`/profiles/${user.username}`}
+            href={userAuth?.id === user.id ? '/user/files' : `/profiles/${user.username}`}
             w={'full'}
             mt={8}
-            bg={useColorModeValue('#151f21', 'gray.900')}
+            bg={'blue.900'}
             color={'white'}
             rounded={'md'}
             _hover={{
               transform: 'translateY(-2px)',
               boxShadow: 'lg',
+              bg: "blue.800"
             }}>
             View Profile
           </Button>

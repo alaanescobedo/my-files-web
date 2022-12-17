@@ -23,7 +23,7 @@ import { useAuth } from '../../src/store';
 
 export default function Login() {
 
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm({
+  const { register, handleSubmit } = useForm({
     defaultValues: {
       username: '',
       password: ''

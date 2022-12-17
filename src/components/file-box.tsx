@@ -7,8 +7,8 @@ import { DeleteIcon } from '@chakra-ui/icons'
 
 interface FileBoxProps {
   file: FilePublic
-  isDeleting: boolean
-  onDeleteFile: (fileId: string) => void
+  isDeleting?: boolean
+  onDeleteFile?: (fileId: number) => void
 }
 const PDF_THUMBNAIL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/833px-PDF_file_icon.svg.png'
 
@@ -17,7 +17,7 @@ const FileBox = ({ file, isDeleting, onDeleteFile }: FileBoxProps) => {
   const formatName = file.publicName.split('.')[0].slice(0, 10).concat('...').concat(file.publicName.split('.').pop() ?? 'ext')
   const thumbnail = PDF_THUMBNAIL
 
-  const { isOpen, onClose, onOpen } = useDisclosure({ id: file.id })
+  const { isOpen, onClose, onOpen } = useDisclosure()
 
   const [isOpenMenu, setIsOpenMenu] = useState(false)
 
@@ -53,7 +53,7 @@ const FileBox = ({ file, isDeleting, onDeleteFile }: FileBoxProps) => {
             </MenuButton>
           </Tooltip>
           <HStack as={MenuList} spacing={1} px={2} minW={'fit-content'} m={0}  >
-            <MenuItem w='fit-content' p={1} onClick={() => onDeleteFile(file.id)} >
+            <MenuItem w='fit-content' p={1} onClick={() => onDeleteFile && onDeleteFile(file.id)} >
               <Icon as={DeleteIcon} color={'red.400'} />
             </MenuItem>
           </HStack>

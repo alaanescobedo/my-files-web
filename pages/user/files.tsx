@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { Box, Button, Container, Divider, Flex, Grid, GridItem, Heading, useColorModeValue, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, Container, Divider, Flex, Grid, GridItem, Heading, Text, useColorModeValue, useDisclosure, VStack } from '@chakra-ui/react'
 
 import FileUploadBox from '../../src/components/file-upload-box'
 import FileBox from '../../src/components/file-box'
@@ -12,7 +12,9 @@ import { FormProvider, useForm } from 'react-hook-form'
 
 export default function MyFilesPage() {
 
-  const { user } = useUser()
+  const { user } = useUser({
+    redirectTo: '/auth/login',
+  })
 
   const query = useQuery({
     queryKey: ['user_public-file'], queryFn: async () => {
@@ -26,14 +28,13 @@ export default function MyFilesPage() {
 
   const [isFileLoaded, setIsFileLoaded] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [deletingFileId, setDeletingFileId] = useState<string | null>(null)
+  const [deletingFileId, setDeletingFileId] = useState<number | null>(null)
   const [myFiles, setMyFiles] = useState<FilePublic[]>([])
+  const [error, setError] = useState<string | null>(null)
   const methods = useForm();
 
   useEffect(() => {
-    if (query.isSuccess && query.data) {
-      setMyFiles(query.data)
-    }
+    if (query.isSuccess && query.data) setMyFiles(query.data)
   }, [query.isFetched])
 
   const onSubmit = methods.handleSubmit(async (data) => {
@@ -48,19 +49,19 @@ export default function MyFilesPage() {
       setIsFileLoaded(false)
       setIsLoading(false)
     } catch (error: any) {
-      console.log(error)
+      setError(error.message)
     } finally {
       setIsLoading(false)
     }
   })
 
-  const handleDeleteFile = async (fileId: string) => {
+  const handleDeleteFile = async (fileId: number) => {
     try {
       setDeletingFileId(fileId)
       await userService.deletePublicFile(fileId)
       setMyFiles(prev => prev.filter(file => file.id !== fileId))
     } catch (error: any) {
-      console.log(error);
+      setError(error.message);
     } finally {
       setDeletingFileId(null)
     }
@@ -85,6 +86,10 @@ export default function MyFilesPage() {
               For demo purposes, files will be deleted with frequency.
               <br />
               Currently, only pdf files are supported.
+              <br />
+              Limit: {user?.subscription?.plan.limitCloudStorage} files
+              ||
+              Limit Upload: {user?.subscription?.plan.limitCloudMonthlyUploads} files / month
             </Heading>
             <Divider />
             <Container maxW={'container.lg'} >
@@ -99,13 +104,16 @@ export default function MyFilesPage() {
                     ))}
                     <GridItem h='100%' display={'flex'} justifyContent='center' >
 
-                      <FileUploadBox isLoading={isLoading} setIsFileLoaded={setIsFileLoaded} />
+                      <FileUploadBox isLoading={isLoading} setIsFileLoaded={setIsFileLoaded}
+                        disabled={user?.subscription?.plan.limitCloudStorage === myFiles.length} />
 
                     </GridItem>
                   </Grid>
                   <Divider my={4} />
-                  <Flex justifyContent={'end'} >
-
+                  <Flex justifyContent={'end'} flexDirection={['column', 'row']} gap={'1rem'}>
+                    <Flex justifyContent={'center'} alignItems='center' w='full' >
+                      <Text color={'red.400'} >{error}</Text>
+                    </Flex>
                     <Button w={['full', 'md', 'sm']} leftIcon={<HiUpload />} type='submit' form='form-attachment' disabled={!isFileLoaded || isLoading ? true : false} >
                       {isFileLoaded && !isLoading && 'Upload'}
                       {!isFileLoaded && !isLoading && 'No file selected'}

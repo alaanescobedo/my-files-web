@@ -8,9 +8,10 @@ const PDF_THUMBNAIL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87
 
 interface FileUploadBoxProps {
   isLoading: boolean
+  disabled?: boolean
   setIsFileLoaded: (isFileLoaded: boolean) => void
 }
-const FileUploadBox = ({ isLoading, setIsFileLoaded }: FileUploadBoxProps) => {
+const FileUploadBox = ({ isLoading, disabled, setIsFileLoaded }: FileUploadBoxProps) => {
 
   const [previewFile, setPreviewFile] = useState<{ name: string, img: string, ext: string } | null>({
     name: '',
@@ -69,10 +70,11 @@ const FileUploadBox = ({ isLoading, setIsFileLoaded }: FileUploadBoxProps) => {
 
   return (
     <VStack display={'block'}>
-      <Button variant={'outline'} gap={3} borderWidth='thin' borderStyle={!previewFile ? 'dashed' : 'solid'} p='10' pointerEvents={'inherit'} onClick={handleClick} w='full' bg={`url(${previewFile?.img})`} bgSize='contain' bgPos='center' bgRepeat='no-repeat' opacity={0.6} _hover={{ opacity: 1, cursor: 'pointer', borderColor: 'white' }} sx={{
-        backgroundOrigin: 'border-box',
-      }}
+      <Button variant={'outline'} gap={3} borderWidth='thin' borderStyle={!previewFile ? 'dashed' : 'solid'} p='10' pointerEvents={'inherit'} onClick={handleClick} w='full' bg={`url(${previewFile?.img})`} bgSize='contain' bgPos='center' bgRepeat='no-repeat' opacity={0.6}
+        _hover={{ opacity: 1, borderColor: `${disabled ? 'gray.700' : 'white'}` }}
+        sx={{ backgroundOrigin: 'border-box' }}
         borderColor={previewFile?.name === "error" ? 'red.500' : isLoading ? 'blue.500' : 'gray.700'}
+        disabled={disabled}
       >
 
         <VStack spacing={1}>
@@ -83,7 +85,7 @@ const FileUploadBox = ({ isLoading, setIsFileLoaded }: FileUploadBoxProps) => {
             </Text>
           </RenderIf>
 
-          <RenderIf condition={previewFile ? false : true}>
+          <RenderIf condition={previewFile ? false : true && !disabled}>
             <HStack spacing={1}>
               <Icon as={AttachmentIcon} />
               <Text>Attachment</Text>
@@ -91,11 +93,15 @@ const FileUploadBox = ({ isLoading, setIsFileLoaded }: FileUploadBoxProps) => {
           </RenderIf>
 
           <RenderIf condition={isLoading}>
-            <Text fontSize={'sm'} fontWeight={'bold'} textTransform={'uppercase'} letterSpacing={'wide'} bg={'gray.700'} p={1} borderRadius={'md'} opacity={1} color={'blue.500'} >s
+            <Text fontSize={'sm'} fontWeight={'bold'} textTransform={'uppercase'} letterSpacing={'wide'} bg={'gray.700'} p={1} borderRadius={'md'} opacity={1} color={'blue.500'} >
               Loading
             </Text>
           </RenderIf>
-          
+          <RenderIf condition={disabled ? true : false}>
+            <Text fontSize={'sm'} fontWeight={'bold'} textTransform={'uppercase'} letterSpacing={'wide'} bg={'gray.700'} p={1} borderRadius={'md'} opacity={1} color={'gray.500'} >
+              Disabled
+            </Text>
+          </RenderIf>
         </VStack>
         <VisuallyHiddenInput
           type='file'
@@ -109,6 +115,7 @@ const FileUploadBox = ({ isLoading, setIsFileLoaded }: FileUploadBoxProps) => {
             handlePreviewFileChange(e)
             onChangeFile(e)
           }}
+          disabled={disabled}
         />
       </Button>
       {previewFile?.name && (
