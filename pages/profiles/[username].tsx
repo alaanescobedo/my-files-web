@@ -12,7 +12,7 @@ interface UserProfileProps {
   username: string
   publicFiles: FilePublic[]
 }
-export default function UserProfile({ username, publicFiles }: UserProfileProps) {
+export default function UserProfile({ username, publicFiles = [] }: UserProfileProps) {
 
   return (
     <>
@@ -65,7 +65,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false
+    fallback: true
   }
 }
 
