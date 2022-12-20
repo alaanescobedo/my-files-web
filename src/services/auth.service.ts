@@ -22,7 +22,7 @@ interface LoginPayload {
 }
 export const login = async (payload: LoginPayload) => {
   try {
-    const data = await fetch.post(API_URL.LOGIN, payload,{
+    const data = await fetch.post(API_URL.LOGIN, payload, {
       headers: {
         "Content-Type": "application/json",
         'Access-Control-Allow-Origin': 'my-files-app.vercel.app'
@@ -37,7 +37,7 @@ export const login = async (payload: LoginPayload) => {
 
 export const logout = async () => {
   try {
-    const data = await fetch.get(API_URL.LOGOUT,{
+    const data = await fetch.get(API_URL.LOGOUT, {
       headers: {
         "Content-Type": "application/json",
         'Access-Control-Allow-Origin': 'my-files-app.vercel.app'
@@ -52,6 +52,7 @@ export const logout = async () => {
 
 export const authenticate = async (cookie?: any) => {
   try {
+    console.log({ cookie })
     const data = await fetch.get<User>(API_URL.AUTHENTICATE, {
       headers: {
         "Content-Type": "application/json",

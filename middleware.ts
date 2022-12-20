@@ -7,7 +7,7 @@ import authService from './src/services/auth.service'
 export async function middleware(request: NextRequest) {
 
   if (request.nextUrl.pathname.startsWith('/user')) {
-    const atCookie = request.cookies.get(process.env.JWT_ACCESS_TOKEN_COOKIE_NAME || "");
+    const atCookie = request.cookies.get(process.env.JWT_REFRESH_TOKEN_COOKIE_NAME || "refresh_token");
     try {
       await authService.authenticate(`${atCookie?.name}=${atCookie?.value}`)
     } catch (error: any) {
@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
     }
   }
   if (request.nextUrl.pathname.startsWith('/auth')) {
-    const atCookie = request.cookies.get(process.env.JWT_ACCESS_TOKEN_COOKIE_NAME || "");
+    const atCookie = request.cookies.get(process.env.JWT_REFRESH_TOKEN_COOKIE_NAME || "refresh_token");
     try {
       await authService.authenticate(`${atCookie?.name}=${atCookie?.value}`)
       return NextResponse.redirect(new URL('/', request.url))
