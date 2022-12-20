@@ -25,7 +25,6 @@ export const login = async (payload: LoginPayload) => {
     const data = await fetch.post(API_URL.LOGIN, payload,{
       headers: {
         "Content-Type": "application/json",
-        'Access-Control-Allow-Credentials': 'true',
         'Access-Control-Allow-Origin': 'my-files-app.vercel.app',
         'Access-Control-Allow-Methods': 'POST',
       }
