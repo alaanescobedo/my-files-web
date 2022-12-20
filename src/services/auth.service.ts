@@ -22,7 +22,14 @@ interface LoginPayload {
 }
 export const login = async (payload: LoginPayload) => {
   try {
-    const data = await fetch.post(API_URL.LOGIN, payload)
+    const data = await fetch.post(API_URL.LOGIN, payload,{
+      headers: {
+        "Content-Type": "application/json",
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Origin': 'my-files-app.vercel.app',
+        'Access-Control-Allow-Methods': 'POST',
+      }
+    })
     return data
   } catch (error) {
     throw error
@@ -43,7 +50,10 @@ export const authenticate = async (cookie?: any) => {
     const data = await fetch.get<User>(API_URL.AUTHENTICATE, {
       headers: {
         "Content-Type": "application/json",
-        'Cookie': cookie ? cookie : ''
+        'Cookie': cookie ? cookie : '',
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Origin': 'my-files-app.vercel.app',
+        'Access-Control-Allow-Methods': 'GET',
       },
     })
     return data
