@@ -26,7 +26,8 @@ export const login = async (payload: LoginPayload) => {
       headers: {
         "Content-Type": "application/json",
         'Access-Control-Allow-Origin': 'my-files-app.vercel.app'
-      }
+      },
+      credentials: 'include'
     })
     return data
   } catch (error) {
@@ -36,7 +37,13 @@ export const login = async (payload: LoginPayload) => {
 
 export const logout = async () => {
   try {
-    const data = await fetch.get(API_URL.LOGOUT)
+    const data = await fetch.get(API_URL.LOGOUT,{
+      headers: {
+        "Content-Type": "application/json",
+        'Access-Control-Allow-Origin': 'my-files-app.vercel.app'
+      },
+      credentials: 'include'
+    })
     return data
   } catch (error) {
     throw error
@@ -51,6 +58,7 @@ export const authenticate = async (cookie?: any) => {
         'Cookie': cookie ? cookie : '',
         'Access-Control-Allow-Origin': 'my-files-app.vercel.app'
       },
+      credentials: 'include',
     })
     return data
   } catch (error: any) {

@@ -24,7 +24,6 @@ export const get = async <T>(url: string, config?: Omit<RequestInit, 'body' | 'm
       headers: config?.headers ? config.headers : {
         'Content-Type': 'application/json',
       },
-      credentials: config?.credentials ? config.credentials : 'include',
       ...config,
     })
     return await handleResponse(response)
