@@ -8,6 +8,7 @@ export async function middleware(request: NextRequest) {
 
   if (request.nextUrl.pathname.startsWith('/user')) {
     const atCookie = request.cookies.get(process.env.JWT_ACCESS_TOKEN_COOKIE_NAME || "");
+    console.log({ atCookie })
     try {
       await authService.authenticate(`${atCookie?.name}=${atCookie?.value}`)
     } catch (error: any) {
