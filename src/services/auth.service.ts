@@ -50,7 +50,6 @@ export const authenticate = async (cookie?: any) => {
       headers: {
         "Content-Type": "application/json",
         'Cookie': cookie ? cookie : '',
-        'Access-Control-Allow-Credentials': 'true',
         'Access-Control-Allow-Origin': 'my-files-app.vercel.app',
         'Access-Control-Allow-Methods': 'GET',
       },
