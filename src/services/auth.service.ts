@@ -25,8 +25,7 @@ export const login = async (payload: LoginPayload) => {
     const data = await fetch.post(API_URL.LOGIN, payload,{
       headers: {
         "Content-Type": "application/json",
-        'Access-Control-Allow-Origin': 'my-files-app.vercel.app',
-        'Access-Control-Allow-Methods': 'POST',
+        'Access-Control-Allow-Origin': 'my-files-app.vercel.app'
       }
     })
     return data
@@ -50,8 +49,7 @@ export const authenticate = async (cookie?: any) => {
       headers: {
         "Content-Type": "application/json",
         'Cookie': cookie ? cookie : '',
-        'Access-Control-Allow-Origin': 'my-files-app.vercel.app',
-        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Origin': 'my-files-app.vercel.app'
       },
     })
     return data
