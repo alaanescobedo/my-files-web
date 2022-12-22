@@ -7,6 +7,7 @@ import authService from './src/services/auth.service'
 export async function middleware(request: NextRequest) {
 
   console.log('accesstoken: ', process.env.JWT_ACCESS_TOKEN_COOKIE_NAME)
+  console.log('cookie >>', request.cookies.get(process.env.JWT_ACCESS_TOKEN_COOKIE_NAME!))
 
   if (request.nextUrl.pathname.startsWith('/user')) {
     const atCookie = request.cookies.get(process.env.JWT_ACCESS_TOKEN_COOKIE_NAME || "");
