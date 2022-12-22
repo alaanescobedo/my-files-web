@@ -6,8 +6,11 @@ import authService from './src/services/auth.service'
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
 
+  console.log('accesstoken: ', process.env.JWT_ACCESS_TOKEN_COOKIE_NAME)
+
   if (request.nextUrl.pathname.startsWith('/user')) {
     const atCookie = request.cookies.get(process.env.JWT_ACCESS_TOKEN_COOKIE_NAME || "");
+    console.log({ atCookie })
     try {
       await authService.authenticate(`${atCookie?.name}=${atCookie?.value}`)
     } catch (error: any) {
@@ -16,6 +19,7 @@ export async function middleware(request: NextRequest) {
   }
   if (request.nextUrl.pathname.startsWith('/auth')) {
     const atCookie = request.cookies.get(process.env.JWT_ACCESS_TOKEN_COOKIE_NAME || "");
+    console.log({ atCookie })
     try {
       await authService.authenticate(`${atCookie?.name}=${atCookie?.value}`)
       return NextResponse.redirect(new URL('/', request.url))

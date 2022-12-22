@@ -39,6 +39,7 @@ export const logout = async () => {
 }
 
 export const authenticate = async (cookie?: any) => {
+  console.log({ cookie })
   try {
     const data = await fetch.get<User>(API_URL.AUTHENTICATE, {
       headers: {
