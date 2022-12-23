@@ -4,6 +4,7 @@ import { useUser } from '../../src/store'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import userService from '../../src/services/user.service'
+import { RenderIf } from '../../src/components/render-if'
 
 export default function AvatarPage() {
 
@@ -16,6 +17,7 @@ export default function AvatarPage() {
   const [isLoading, setIsLoading] = useState<Boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [isFilePicked, setIsFilePicked] = useState<boolean>(false)
+  const [isFileUploaded, setIsFileUploaded] = useState<boolean>(false)
 
   const handleProfileImageChange = (fileList: FileList | null) => {
     if (!fileList) return
@@ -36,6 +38,7 @@ export default function AvatarPage() {
 
   const onSubmit = handleSubmit(async data => {
     try {
+      setIsFileUploaded(false)
       setError(null)
       setIsLoading(true)
       if (!data.avatar) return
@@ -44,10 +47,11 @@ export default function AvatarPage() {
       formData.append("file", data.avatar[0], data.avatar[0].name)
       await userService.updateAvatar(formData)
       await refresh()
+      setIsFileUploaded(true)  
     } catch (error: any) {
       setError(error.message)
     } finally {
-      setIsFilePicked(false)  
+      setIsFilePicked(false)
       setIsLoading(false)
       resetField('avatar')
     }
@@ -85,6 +89,9 @@ export default function AvatarPage() {
                       {error && (
                         <Text color='red.500' textAlign={'center'}>{error}</Text>
                       )}
+                      <RenderIf  condition={isFileUploaded}>
+                        <Text color='green.500' textAlign={'center'}>File uploaded successfully</Text>
+                      </RenderIf>
                       <Input
                         placeholder="Select Date and Time"
                         variant={'filled'}
