@@ -202,7 +202,6 @@ function formatUser(user: User) {
     email: user.email,
     avatar: user.avatar || null,
     address: user.address || null,
-    // @ts-ignore -- backend will fix typo
-    subscription: user.suscription || null,
+    subscription: user.subscription || null,
   } as User
 }
