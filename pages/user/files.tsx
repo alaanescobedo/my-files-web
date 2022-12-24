@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
-import { Box, Button, Container, Divider, Flex, Grid, GridItem, Heading, Text, useColorModeValue, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, Container, Divider, Flex, Grid, GridItem, Heading, Spinner, Text, useColorModeValue, useDisclosure, VStack } from '@chakra-ui/react'
 
 import FileUploadBox from '../../src/components/file-upload-box'
 import FileBox from '../../src/components/file-box'
@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query'
 import userService from '../../src/services/user.service'
 import { FilePublic, useUser } from '../../src/store'
 import { FormProvider, useForm } from 'react-hook-form'
+import { RenderIf } from '../../src/components/render-if'
 
 export default function MyFilesPage() {
 
@@ -79,9 +80,12 @@ export default function MyFilesPage() {
       <Container maxW={'container.lg'} p={4} my={'5rem'} display={'flex'} flexDirection={'column'} flex="1">
         <Box as='main' bg={useColorModeValue('white', 'gray.800')} flex='1' borderWidth={2} borderColor='whiteAlpha.400' borderRadius={'md'} p={4} display={'flex'} flexDirection={'column'}>
           <VStack gap={5} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'} h='full' flex={1}  >
+            {/* TOP */}
             <Heading>
               My Files
             </Heading>
+
+            {/* INFO */}
             <Heading size='sm' color={'gray.500'}>
               For demo purposes, files will be deleted with frequency.
               <br />
@@ -92,39 +96,58 @@ export default function MyFilesPage() {
               Limit Upload: {user?.subscription?.plan.limitCloudMonthlyUploads} files / month
             </Heading>
             <Divider />
+
+            {/* BODY */}
             <Container maxW={'container.lg'} >
-              <FormProvider {...methods} >
-                <form onSubmit={onSubmit} id='form-attachment' >
-                  <Grid templateColumns={"repeat(auto-fill, minmax(150px, 1fr))"} gap={6} alignItems='center'>
 
-                    {myFiles.map((file) => (
-                      <GridItem h='100%' display={'flex'} justifyContent='center' key={file.id}>
-                        <FileBox file={file} onDeleteFile={handleDeleteFile} isDeleting={deletingFileId === file.id} />
+              {/* LOADING */}
+              <RenderIf condition={query.isFetching || query.isLoading}>
+                <Box textAlign={'center'} >
+                  <Spinner />
+                </Box>
+              </RenderIf>
+
+              {/* CONTENT */}
+              <RenderIf condition={query.isFetched}>
+                <FormProvider {...methods} >
+                  <form onSubmit={onSubmit} id='form-attachment' >
+                    <Grid templateColumns={"repeat(auto-fill, minmax(150px, 1fr))"} gap={6} alignItems='center'>
+
+                      {/* FILES */}
+                      {myFiles.map((file) => (
+                        <GridItem h='100%' display={'flex'} justifyContent='center' key={file.id}>
+                          <FileBox file={file} onDeleteFile={handleDeleteFile} isDeleting={deletingFileId === file.id} />
+                        </GridItem>
+                      ))}
+                      {/* SELECT FILE */}
+                      <GridItem h='100%' display={'flex'} justifyContent='center' >
+                        <FileUploadBox isLoading={isLoading} setIsFileLoaded={setIsFileLoaded}
+                          disabled={user?.subscription?.plan.limitCloudStorage === myFiles.length} />
                       </GridItem>
-                    ))}
-                    <GridItem h='100%' display={'flex'} justifyContent='center' >
+                    </Grid>
+                    <Divider my={4} />
 
-                      <FileUploadBox isLoading={isLoading} setIsFileLoaded={setIsFileLoaded}
-                        disabled={user?.subscription?.plan.limitCloudStorage === myFiles.length} />
+                    {/* UPLOAD FILE */}
+                    <Flex justifyContent={'end'} flexDirection={['column', 'row']} gap={'1rem'}>
 
-                    </GridItem>
-                  </Grid>
-                  <Divider my={4} />
-                  <Flex justifyContent={'end'} flexDirection={['column', 'row']} gap={'1rem'}>
-                    <Flex justifyContent={'center'} alignItems='center' w='full' >
-                      <Text color={'red.400'} >{error}</Text>
+                      {/* ERROR */}
+                      <Flex justifyContent={'center'} alignItems='center' w='full' >
+                        <Text color={'red.400'} >{error}</Text>
+                      </Flex>
+
+                      {/* UPLOAD BUTTON */}
+                      <Button w={['full', 'md', 'sm']} leftIcon={<HiUpload />} type='submit' form='form-attachment' disabled={!isFileLoaded || isLoading ? true : false} >
+                        {isFileLoaded && !isLoading && 'Upload'}
+                        {!isFileLoaded && !isLoading && 'No file selected'}
+                        {isFileLoaded && isLoading && 'Uploading...'}
+                      </Button>
+
                     </Flex>
-                    <Button w={['full', 'md', 'sm']} leftIcon={<HiUpload />} type='submit' form='form-attachment' disabled={!isFileLoaded || isLoading ? true : false} >
-                      {isFileLoaded && !isLoading && 'Upload'}
-                      {!isFileLoaded && !isLoading && 'No file selected'}
-                      {isFileLoaded && isLoading && 'Uploading...'}
-                    </Button>
+                  </form>
+                </FormProvider>
+              </RenderIf>
 
-                  </Flex>
-                </form>
-              </FormProvider>
             </Container>
-
           </VStack>
         </Box >
       </Container >
