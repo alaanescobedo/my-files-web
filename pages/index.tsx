@@ -4,24 +4,13 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import UserCard from '../src/components/user-card'
 import usersService from '../src/services/users.service'
 import { RenderIf } from '../src/components/render-if'
-import { User } from '../src/store'
+import { User, useUser } from '../src/store'
 import { useState, useEffect } from 'react'
+import { GetStaticProps } from 'next'
+import { useRouter } from 'next/router'
 
-export default function Home() {
-
-  const query = useQuery({
-    queryKey: ['users_profile'], queryFn: async () => {
-      return usersService.getUsersPublicProfile()
-    },
-    refetchOnWindowFocus: false,
-  })
-
-  const [usersData, setUsersData] = useState<User[]>(query.data || [])
-
-  useEffect(() => {
-    if (query.isSuccess) setUsersData(query.data)
-  }, [query.isFetched])
-
+export default function Home({ profiles }: { profiles: User[] }) {
+  const { user: myUser } = useUser()
 
   return (
     <>
@@ -34,32 +23,35 @@ export default function Home() {
       <Container maxW={'container.lg'}>
         <Box as='main' flex='1' >
 
-          <RenderIf condition={query.isError}>
-            <p>Error</p>
-          </RenderIf>
-
           <Grid templateColumns='repeat(auto-fill, minmax(300px, 1fr))' gap={4} textAlign="center">
-            <RenderIf condition={query.isError}>
-              <p>Error</p>
+            <RenderIf condition={myUser !== null}>
+              <GridItem >
+                <UserCard user={myUser!} />
+              </GridItem>
             </RenderIf>
-            <RenderIf condition={query.isLoading}>
-              {Array.from({ length: 9 }).map((_, index) => (
-                <GridItem key={index} py={'28'}>
-                  < Spinner />
-                </GridItem>
-              ))}
-            </RenderIf>
-
-            <RenderIf condition={query.isSuccess && usersData.length > 0}>
-              {usersData.slice(0).reverse().map((user) => (
+            {profiles.map((user) => {
+              if (myUser?.id === user.id) return null
+              return (
                 <GridItem key={user.id}>
                   <UserCard user={user} />
                 </GridItem>
-              ))}
-            </RenderIf>
+              )
+            })}
           </Grid>
         </Box>
       </Container>
     </>
   )
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+
+  const profiles = await usersService.getUsersPublicProfile()
+
+  return {
+    props: {
+      profiles: profiles.slice(0).reverse()
+    },
+    revalidate: 1
+  }
 }
