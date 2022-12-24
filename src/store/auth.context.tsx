@@ -57,7 +57,7 @@ export const useAuth = ({ redirectOnAuth }: { redirectOnAuth?: string } = {}) =>
 
   useEffect(() => {
     if (success && redirectOnAuth) {
-      router.push(redirectOnAuth)
+      router.replace(redirectOnAuth)
     }
   }, [success])
 
@@ -75,7 +75,7 @@ export const useUser = ({ redirectTo }: { redirectTo?: string } = {}) => {
 
   useEffect(() => {
     if (!user && !loading && redirectTo) {
-      router.push(redirectTo)
+      router.replace(redirectTo)
     }
   }, [user])
 
