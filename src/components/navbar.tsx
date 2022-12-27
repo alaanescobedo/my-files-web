@@ -76,7 +76,7 @@ export default function Navbar() {
 
         </Flex>
 
-        {showFull && !user && !loading && (
+        {showFull && !user && (
           <Stack
             flex={{ base: 1, md: 0 }}
             justify={'flex-end'}
