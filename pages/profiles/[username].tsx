@@ -33,7 +33,7 @@ export default function UserProfile({ username, publicFiles = [] }: UserProfileP
                 </Heading>
                 <Divider />
 
-                <Grid templateColumns={"repeat(auto-fill, minmax(150px, 1fr))"} gap={6} alignItems='center'>
+                <Grid templateColumns={"repeat(auto-fill, minmax(150px, 1fr))"} gap={6} alignItems='center' w={'100%'}>
                   {publicFiles.map((file) => (
                     <GridItem h='100%' display={'flex'} justifyContent='center' key={file.id}>
                       <FileBox file={file} />
